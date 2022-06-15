@@ -1,0 +1,63 @@
+body{
+    width: 1000px;
+    height: 500px;
+    /*border: 5px solid red;*/
+}
+header{
+    margin: 3% 32%;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+#query{
+    display: flex;
+    align-items: center;
+}
+#search_query{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding-left: 10px;
+    padding-right: 10px;
+
+    position: static;
+    width: 600px;
+    height: 25px;
+    border-radius: 7px;
+
+    flex: none; 
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-weight: 500;
+    flex-grow: 0;
+    margin: 12px 15px;
+}
+#submit_query{
+    width: 13%;
+    margin-left: 3%;
+}
+#wrapper_list {
+    overflow-y: auto;
+    height: 336px;
+}
+.list_item {
+    padding-bottom: 7px;
+}
+.ms-Button.ms-Button--hero .ms-Button-label {
+    color: #0078d7;
+}
+  
+.ms-Button.ms-Button--hero:hover .ms-Button-label,
+.ms-Button.ms-Button--hero:focus .ms-Button-label{
+  color: #005a9e;
+  cursor: pointer;
+}
+.insert_link {
+    width: 130px;
+    height: 25px;
+  }
+  .description {
+    width: 400px;
+    word-wrap: break-word;
+    word-break: break-all;
+  }
+#del_all {
+    margin-left: 5%;
+}

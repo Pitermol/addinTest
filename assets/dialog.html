@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Поиск</title>
+
+    <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1.1/hosted/office.js"></script>
+
+    <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/9.6.1/css/fabric.min.css"/>
+    <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-js/1.4.0/css/fabric.min.css" />
+    <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-js/1.4.0/css/fabric.components.min.css" />
+    <link href="dialog.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+    <header>
+        <h1>Поиск документов</h1>
+    </header>
+    <main>
+        <div id="query">
+            <input placeholder="Введите запрос" id="search_query" accept-charset="UTF-8">
+            <button class="ms-Button" id="submit_query">Поиск</button>
+        </div>
+        <div id="wrapper_list">
+            <ul id="list">
+                <li class="list_item">
+                    <div style="display: flex; align-items: center">
+                        <h3 class=description>Sample document</h3>
+                        <button style="margin-left: 20px" value="3*15*https://internet.garant.ru/#/document/71848756" class="ms-Button" onclick="f1(this)">Вставить ссылку</button>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </main>
+</body>
+
+<script type="text/javascript", charset="UTF-8">
+    Office.onReady()
+    .then(function() {
+        var query = window.location.search.split("query=")[1].split("&")[0];
+        if (query != "null") {
+            query = decodeURIComponent(query);
+            document.getElementById("search_query").value = query;
+
+            fetch("https://garantserver.herokuapp.com/get_links?text=" + query)
+            .then((response) => {
+              return response.json();
+            })
+            .then((data) => {
+                //show_docs(data.answer);
+                document.getElementById("list").innerHTML = "";
+                var link;
+                var name;
+                var start;
+                var end
+                var links = data.answer.split("<a href=");
+                var ul = document.getElementById("list");
+                console.log(links);
+                for (var i = 1; i < Math.floor(links.length / 2) + 1 ; i += 2) {
+                  link = links[i].split("</a>")[0];
+                  name = link.split(">")[1];
+                  link = link.split(">")[0].slice(1, -1);
+                  console.log(name, link);
+                  start = data.answer.split(link)[0].length - 9;
+                  end = data.answer.split(link)[0].length + link.length + 2 + name.length + 5;
+                  var li = document.createElement("li");
+                  var div = document.createElement("div");
+                  div.style = "display: flex; align-items: center";
+                  div.innerHTML = "<h3 class=description lang='ru'>" + name + "</h3>\n<button style=\"margin-left: 20px\" value=\"" + String(start) + "*" + String(end) + "*" + link + "\" class=\"ms-Button\" onclick='f1(this)'>Вставить ссылку</button>";
+                  li.appendChild(div);
+                  ul.appendChild(li);
+                }
+                console.log(data.answer);
+            });
+        }
+        console.log(query);
+    });
+
+    document.getElementById("submit_query").onclick = function() {
+        document.getElementById("list").innerHTML = "";
+        var text = document.getElementById("search_query").value;
+        fetch("https://garantserver.herokuapp.com/get_links?text=" + text)
+            .then((response) => {
+              return response.json();
+            })
+            .then((data) => {
+                //show_docs(data.answer);
+                var link;
+                var name;
+                var start;
+                var end
+                var links = data.answer.split("<a href=");
+                var ul = document.getElementById("list");
+                for (var i = 1; i < Math.floor(links.length / 2) + 1 ; i += 2) {
+                  link = links[i].split("</a>")[0];
+                  name = link.split(">")[1];
+                  link = link.split(">")[0].slice(1, -1);
+                  start = data.answer.split(link)[0].length - 9;
+                  end = data.answer.split(link)[0].length + link.length + 2 + name.length + 5;
+                  var li = document.createElement("li");
+                  var div = document.createElement("div");
+                  div.style = "display: flex; align-items: center";
+                  div.innerHTML = "<h3 class=description lang='ru'>" + name + "</h3>\n<button style=\"margin-left: 20px\" value=\"" + String(start) + "*" + String(end) + "*" + link + "\" class=\"ms-Button\" onclick='f1(this)'>Вставить ссылку</button>";
+                  li.appendChild(div);
+                  ul.appendChild(li);
+                }
+                console.log(data.answer);
+            });
+    };
+
+    function f1(val) {
+        val = String(val.value).split("*");
+        var start = val[0];
+        var end = val[1];
+        var link = val[2];
+        console.log(link);
+        Office.context.ui.messageParent(link, { targetOrigin: "*" });
+    }
+  </script>
+
+</html>
